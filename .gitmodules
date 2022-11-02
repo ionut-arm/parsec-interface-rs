@@ -1,3 +1,4 @@
 [submodule "parsec-operations"]
 	path = parsec-operations
-	url = https://github.com/parallaxsecond/parsec-operations.git
+	url = https://github.com/ionut-arm/parsec-operations.git
+	branch = attested-tls

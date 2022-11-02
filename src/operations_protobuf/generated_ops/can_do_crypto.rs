@@ -3,7 +3,7 @@ pub struct Operation {
     #[prost(enumeration="CheckType", tag="1")]
     pub check_type: i32,
     #[prost(message, optional, tag="2")]
-    pub attributes: ::std::option::Option<super::psa_key_attributes::KeyAttributes>,
+    pub attributes: ::core::option::Option<super::psa_key_attributes::KeyAttributes>,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Result {

@@ -33,14 +33,15 @@ pub mod psa_raw_key_agreement;
 pub mod can_do_crypto;
 pub mod attest_key;
 pub mod prepare_key_attestation;
+pub mod list_rots;
 
 use zeroize::Zeroize;
 
 use crate::requests::{ResponseStatus, Result};
+use can_do_crypto::CheckType;
 use log::error;
 use psa_algorithm::algorithm::{aead::AeadWithDefaultLengthTag, key_agreement::Raw, Cipher, Hash};
 use psa_key_attributes::key_type::{DhFamily, EccFamily};
-use can_do_crypto::CheckType;
 use std::convert::TryFrom;
 
 impl TryFrom<i32> for Cipher {
@@ -125,10 +126,7 @@ impl TryFrom<i32> for CheckType {
     type Error = ResponseStatus;
     fn try_from(check_type_val: i32) -> Result<Self> {
         CheckType::from_i32(check_type_val).ok_or_else(|| {
-            error!(
-                "Value {} not supported as a check type.",
-                check_type_val
-            );
+            error!("Value {} not supported as a check type.", check_type_val);
             ResponseStatus::InvalidEncoding
         })
     }
@@ -175,6 +173,8 @@ empty_clear_message!(psa_hash_compare::Result);
 empty_clear_message!(can_do_crypto::Operation);
 empty_clear_message!(can_do_crypto::Result);
 empty_clear_message!(prepare_key_attestation::Operation);
+empty_clear_message!(list_rots::Operation);
+empty_clear_message!(list_rots::Result);
 
 impl ClearProtoMessage for psa_sign_hash::Operation {
     fn clear_message(&mut self) {
@@ -299,11 +299,15 @@ impl ClearProtoMessage for psa_cipher_decrypt::Operation {
 }
 
 impl ClearProtoMessage for psa_cipher_encrypt::Result {
-    fn clear_message(&mut self) { self.ciphertext.zeroize(); }
+    fn clear_message(&mut self) {
+        self.ciphertext.zeroize();
+    }
 }
 
 impl ClearProtoMessage for psa_cipher_decrypt::Result {
-    fn clear_message(&mut self) { self.plaintext.zeroize(); }
+    fn clear_message(&mut self) {
+        self.plaintext.zeroize();
+    }
 }
 
 impl ClearProtoMessage for psa_generate_random::Result {
@@ -382,10 +386,16 @@ impl ClearProtoMessage for attest_key::Result {
                     Some(attest_key::AttestationOutput {
                         mechanism:
                             Some(attest_key::attestation_output::Mechanism::CertifyAndQuote(
-                                attest_key::attestation_output::CertifyAndQuote { key_attestation_certificate, platform_attestation_certificate },
+                                attest_key::attestation_output::CertifyAndQuote {
+                                    key_attestation_certificate,
+                                    platform_attestation_certificate,
+                                },
                             )),
                     }),
-            } => { key_attestation_certificate.zeroize(); platform_attestation_certificate.zeroize(); },
+            } => {
+                key_attestation_certificate.zeroize();
+                platform_attestation_certificate.zeroize();
+            }
             _ => (),
         }
     }

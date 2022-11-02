@@ -34,6 +34,7 @@ mod convert_psa_raw_key_agreement;
 mod convert_can_do_crypto;
 mod convert_attest_key;
 mod convert_prepare_key_attestation;
+mod convert_list_rots;
 
 #[rustfmt::skip]
 #[allow(unused_qualifications, missing_copy_implementations, clippy::pedantic, clippy::module_inception, clippy::upper_case_acronyms, clippy::enum_variant_names)]
@@ -51,6 +52,7 @@ use generated_ops::list_clients as list_clients_proto;
 use generated_ops::list_keys as list_keys_proto;
 use generated_ops::list_opcodes as list_opcodes_proto;
 use generated_ops::list_providers as list_providers_proto;
+use generated_ops::list_rots as list_rots_proto;
 use generated_ops::ping as ping_proto;
 use generated_ops::prepare_key_attestation as prepare_key_attestation_proto;
 use generated_ops::psa_aead_decrypt as psa_aead_decrypt_proto;
@@ -224,6 +226,10 @@ impl Convert for ProtobufConverter {
             Opcode::PrepareKeyAttestation => Ok(NativeOperation::PrepareKeyAttestation(
                 wire_to_native!(body.bytes(), prepare_key_attestation_proto::Operation),
             )),
+            Opcode::ListRoTs => Ok(NativeOperation::ListRoTs(wire_to_native!(
+                body.bytes(),
+                list_rots_proto::Operation
+            ))),
         }
     }
 
@@ -319,6 +325,10 @@ impl Convert for ProtobufConverter {
             NativeOperation::PrepareKeyAttestation(operation) => Ok(RequestBody::from_bytes(
                 native_to_wire!(operation, prepare_key_attestation_proto::Operation),
             )),
+            NativeOperation::ListRoTs(operation) => Ok(RequestBody::from_bytes(native_to_wire!(
+                operation,
+                list_rots_proto::Operation
+            ))),
         }
     }
 
@@ -437,6 +447,10 @@ impl Convert for ProtobufConverter {
             Opcode::PrepareKeyAttestation => Ok(NativeResult::PrepareKeyAttestation(
                 wire_to_native!(body.bytes(), prepare_key_attestation_proto::Result),
             )),
+            Opcode::ListRoTs => Ok(NativeResult::ListRoTs(wire_to_native!(
+                body.bytes(),
+                list_rots_proto::Result
+            ))),
         }
     }
 
@@ -548,6 +562,10 @@ impl Convert for ProtobufConverter {
             NativeResult::PrepareKeyAttestation(result) => Ok(ResponseBody::from_bytes(
                 native_to_wire!(result, prepare_key_attestation_proto::Result),
             )),
+            NativeResult::ListRoTs(result) => Ok(ResponseBody::from_bytes(native_to_wire!(
+                result,
+                list_rots_proto::Result
+            ))),
         }
     }
 }

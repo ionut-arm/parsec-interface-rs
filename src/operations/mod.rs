@@ -39,6 +39,7 @@ pub mod can_do_crypto;
 pub mod attest_key;
 pub mod prepare_key_attestation;
 pub mod utils_deprecated_primitives;
+pub mod list_rots;
 
 pub use psa_crypto::types::algorithm as psa_algorithm;
 pub use psa_crypto::types::key as psa_key_attributes;
@@ -107,6 +108,8 @@ pub enum NativeOperation {
     AttestKey(attest_key::Operation),
     /// PrepareKeyAttestation operation
     PrepareKeyAttestation(prepare_key_attestation::Operation),
+    /// ListRoTs operation
+    ListRoTs(list_rots::Operation),
 }
 
 impl NativeOperation {
@@ -142,6 +145,7 @@ impl NativeOperation {
             NativeOperation::CanDoCrypto(_) => Opcode::CanDoCrypto,
             NativeOperation::AttestKey(_) => Opcode::AttestKey,
             NativeOperation::PrepareKeyAttestation(_) => Opcode::PrepareKeyAttestation,
+            NativeOperation::ListRoTs(_) => Opcode::ListRoTs,
         }
     }
 }
@@ -208,6 +212,8 @@ pub enum NativeResult {
     AttestKey(attest_key::Result),
     /// AttestKey result
     PrepareKeyAttestation(prepare_key_attestation::Result),
+    /// ListRoTs operation
+    ListRoTs(list_rots::Result),
 }
 
 impl NativeResult {
@@ -243,6 +249,7 @@ impl NativeResult {
             NativeResult::CanDoCrypto(_) => Opcode::CanDoCrypto,
             NativeResult::AttestKey(_) => Opcode::AttestKey,
             NativeResult::PrepareKeyAttestation(_) => Opcode::PrepareKeyAttestation,
+            NativeResult::ListRoTs(_) => Opcode::ListRoTs,
         }
     }
 }
@@ -450,6 +457,12 @@ impl From<prepare_key_attestation::Operation> for NativeOperation {
     }
 }
 
+impl From<list_rots::Operation> for NativeOperation {
+    fn from(op: list_rots::Operation) -> Self {
+        NativeOperation::ListRoTs(op)
+    }
+}
+
 impl From<list_providers::Result> for NativeResult {
     fn from(op: list_providers::Result) -> Self {
         NativeResult::ListProviders(op)
@@ -621,5 +634,11 @@ impl From<attest_key::Result> for NativeResult {
 impl From<prepare_key_attestation::Result> for NativeResult {
     fn from(op: prepare_key_attestation::Result) -> Self {
         NativeResult::PrepareKeyAttestation(op)
+    }
+}
+
+impl From<list_rots::Result> for NativeResult {
+    fn from(op: list_rots::Result) -> Self {
+        NativeResult::ListRoTs(op)
     }
 }

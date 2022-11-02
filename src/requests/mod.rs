@@ -143,6 +143,8 @@ pub enum Opcode {
     PrepareKeyAttestation = 0x001F,
     /// CanDoCrypto operation
     CanDoCrypto = 0x0020,
+    /// ListRoTs operation
+    ListRoTs = 0x0021,
 }
 
 impl Opcode {
@@ -156,7 +158,8 @@ impl Opcode {
             | Opcode::ListAuthenticators
             | Opcode::ListKeys
             | Opcode::ListClients
-            | Opcode::DeleteClient => true,
+            | Opcode::DeleteClient
+            | Opcode::ListRoTs => true,
             Opcode::PsaGenerateKey
             | Opcode::PsaDestroyKey
             | Opcode::PsaSignHash
@@ -213,7 +216,8 @@ impl Opcode {
             | Opcode::PsaRawKeyAgreement
             | Opcode::CanDoCrypto
             | Opcode::AttestKey
-            | Opcode::PrepareKeyAttestation => false,
+            | Opcode::PrepareKeyAttestation
+            | Opcode::ListRoTs => false,
         }
     }
 
