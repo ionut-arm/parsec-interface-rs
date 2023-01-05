@@ -10,7 +10,6 @@ use zeroize::Zeroizing;
 /// Native operation for key attestation
 #[derive(Derivative)]
 #[derivative(Debug)]
-#[non_exhaustive]
 pub struct Operation {
     /// Name of key to be attested
     pub attested_key_name: String,
@@ -24,7 +23,6 @@ pub struct Operation {
 /// Native result of key attestation
 #[derive(Derivative)]
 #[derivative(Debug)]
-#[non_exhaustive]
 pub struct Result {
     /// Token that resulted from the attestation operation
     pub attestation_token: Zeroizing<Vec<u8>>,
