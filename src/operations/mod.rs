@@ -37,9 +37,8 @@ pub mod psa_generate_random;
 pub mod psa_raw_key_agreement;
 pub mod can_do_crypto;
 pub mod attest_key;
-pub mod prepare_key_attestation;
 pub mod utils_deprecated_primitives;
-pub mod list_rots;
+pub mod list_attestation_metadata;
 
 pub use psa_crypto::types::algorithm as psa_algorithm;
 pub use psa_crypto::types::key as psa_key_attributes;
@@ -106,10 +105,8 @@ pub enum NativeOperation {
     CanDoCrypto(can_do_crypto::Operation),
     /// AttestKey operation
     AttestKey(attest_key::Operation),
-    /// PrepareKeyAttestation operation
-    PrepareKeyAttestation(prepare_key_attestation::Operation),
     /// ListRoTs operation
-    ListRoTs(list_rots::Operation),
+    ListAttestationMetadata(list_attestation_metadata::Operation),
 }
 
 impl NativeOperation {
@@ -144,8 +141,7 @@ impl NativeOperation {
             NativeOperation::PsaVerifyMessage(_) => Opcode::PsaVerifyMessage,
             NativeOperation::CanDoCrypto(_) => Opcode::CanDoCrypto,
             NativeOperation::AttestKey(_) => Opcode::AttestKey,
-            NativeOperation::PrepareKeyAttestation(_) => Opcode::PrepareKeyAttestation,
-            NativeOperation::ListRoTs(_) => Opcode::ListRoTs,
+            NativeOperation::ListAttestationMetadata(_) => Opcode::ListAttestationMetadata,
         }
     }
 }
@@ -210,10 +206,8 @@ pub enum NativeResult {
     CanDoCrypto(can_do_crypto::Result),
     /// AttestKey result
     AttestKey(attest_key::Result),
-    /// AttestKey result
-    PrepareKeyAttestation(prepare_key_attestation::Result),
     /// ListRoTs operation
-    ListRoTs(list_rots::Result),
+    ListAttestationMetadata(list_attestation_metadata::Result),
 }
 
 impl NativeResult {
@@ -248,8 +242,7 @@ impl NativeResult {
             NativeResult::PsaVerifyMessage(_) => Opcode::PsaVerifyMessage,
             NativeResult::CanDoCrypto(_) => Opcode::CanDoCrypto,
             NativeResult::AttestKey(_) => Opcode::AttestKey,
-            NativeResult::PrepareKeyAttestation(_) => Opcode::PrepareKeyAttestation,
-            NativeResult::ListRoTs(_) => Opcode::ListRoTs,
+            NativeResult::ListAttestationMetadata(_) => Opcode::ListAttestationMetadata ,
         }
     }
 }
@@ -451,15 +444,10 @@ impl From<attest_key::Operation> for NativeOperation {
         NativeOperation::AttestKey(op)
     }
 }
-impl From<prepare_key_attestation::Operation> for NativeOperation {
-    fn from(op: prepare_key_attestation::Operation) -> Self {
-        NativeOperation::PrepareKeyAttestation(op)
-    }
-}
 
-impl From<list_rots::Operation> for NativeOperation {
-    fn from(op: list_rots::Operation) -> Self {
-        NativeOperation::ListRoTs(op)
+impl From<list_attestation_metadata::Operation> for NativeOperation {
+    fn from(op: list_attestation_metadata::Operation) -> Self {
+        NativeOperation::ListAttestationMetadata(op)
     }
 }
 
@@ -631,14 +619,8 @@ impl From<attest_key::Result> for NativeResult {
     }
 }
 
-impl From<prepare_key_attestation::Result> for NativeResult {
-    fn from(op: prepare_key_attestation::Result) -> Self {
-        NativeResult::PrepareKeyAttestation(op)
-    }
-}
-
-impl From<list_rots::Result> for NativeResult {
-    fn from(op: list_rots::Result) -> Self {
-        NativeResult::ListRoTs(op)
+impl From<list_attestation_metadata::Result> for NativeResult {
+    fn from(op: list_attestation_metadata::Result) -> Self {
+        NativeResult::ListAttestationMetadata(op)
     }
 }

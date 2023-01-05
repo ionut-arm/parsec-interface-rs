@@ -14,13 +14,13 @@ use zeroize::Zeroizing;
 #[derive(Debug, Copy, Clone)]
 pub struct Operation {}
 
-/// Attestation mechanism-specific metadata
+/// Provider-specific attestation metadata
 #[derive(Derivative)]
 #[derivative(Debug)]
 #[non_exhaustive]
-pub enum Mechanism {
-    /// Configuration of Certify and Quote TPM2 attestation
-    CertifyAndQuote {
+pub enum AttestationMetadata {
+    /// Configuration of TPM2 for attestation
+    Tpm {
         /// Attributes of attesting key
         ak_attributes: Attributes,
         /// Public part of attesting key
@@ -33,18 +33,18 @@ pub enum Mechanism {
     },
 }
 
-/// Information about a Root of Trust
-#[derive(Debug)]
-pub struct RoTInfo {
-    /// Provider ID
-    pub provider_id: ProviderId,
-    /// Details of the attestation mechanism
-    pub mechanism: Mechanism,
+impl AttestationMetadata {
+    /// Get the provider ID corresponding to the given configuration
+    pub fn provider_id(&self) -> ProviderId {
+        match self {
+            AttestationMetadata::Tpm { .. } => ProviderId::Tpm,
+        }
+    }
 }
 
 /// Native result of listing RoTs
 #[derive(Debug)]
 pub struct Result {
     /// List of supported RoTs and their configuration
-    pub rots: Vec<RoTInfo>,
+    pub attestation_metadata: Vec<AttestationMetadata>,
 }

@@ -33,8 +33,7 @@ mod convert_psa_generate_random;
 mod convert_psa_raw_key_agreement;
 mod convert_can_do_crypto;
 mod convert_attest_key;
-mod convert_prepare_key_attestation;
-mod convert_list_rots;
+mod convert_list_attestation_metadata;
 
 #[rustfmt::skip]
 #[allow(unused_qualifications, missing_copy_implementations, clippy::pedantic, clippy::module_inception, clippy::upper_case_acronyms, clippy::enum_variant_names)]
@@ -47,14 +46,13 @@ use crate::requests::{
 use generated_ops::attest_key as attest_key_proto;
 use generated_ops::can_do_crypto as can_do_crypto_proto;
 use generated_ops::delete_client as delete_client_proto;
+use generated_ops::list_attestation_metadata as list_attestation_metadata_proto;
 use generated_ops::list_authenticators as list_authenticators_proto;
 use generated_ops::list_clients as list_clients_proto;
 use generated_ops::list_keys as list_keys_proto;
 use generated_ops::list_opcodes as list_opcodes_proto;
 use generated_ops::list_providers as list_providers_proto;
-use generated_ops::list_rots as list_rots_proto;
 use generated_ops::ping as ping_proto;
-use generated_ops::prepare_key_attestation as prepare_key_attestation_proto;
 use generated_ops::psa_aead_decrypt as psa_aead_decrypt_proto;
 use generated_ops::psa_aead_encrypt as psa_aead_encrypt_proto;
 use generated_ops::psa_asymmetric_decrypt as psa_asymmetric_decrypt_proto;
@@ -223,13 +221,9 @@ impl Convert for ProtobufConverter {
                 body.bytes(),
                 attest_key_proto::Operation
             ))),
-            Opcode::PrepareKeyAttestation => Ok(NativeOperation::PrepareKeyAttestation(
-                wire_to_native!(body.bytes(), prepare_key_attestation_proto::Operation),
+            Opcode::ListAttestationMetadata => Ok(NativeOperation::ListAttestationMetadata(
+                wire_to_native!(body.bytes(), list_attestation_metadata_proto::Operation),
             )),
-            Opcode::ListRoTs => Ok(NativeOperation::ListRoTs(wire_to_native!(
-                body.bytes(),
-                list_rots_proto::Operation
-            ))),
         }
     }
 
@@ -322,13 +316,9 @@ impl Convert for ProtobufConverter {
                 operation,
                 attest_key_proto::Operation
             ))),
-            NativeOperation::PrepareKeyAttestation(operation) => Ok(RequestBody::from_bytes(
-                native_to_wire!(operation, prepare_key_attestation_proto::Operation),
+            NativeOperation::ListAttestationMetadata(operation) => Ok(RequestBody::from_bytes(
+                native_to_wire!(operation, list_attestation_metadata_proto::Operation),
             )),
-            NativeOperation::ListRoTs(operation) => Ok(RequestBody::from_bytes(native_to_wire!(
-                operation,
-                list_rots_proto::Operation
-            ))),
         }
     }
 
@@ -444,13 +434,9 @@ impl Convert for ProtobufConverter {
                 body.bytes(),
                 attest_key_proto::Result
             ))),
-            Opcode::PrepareKeyAttestation => Ok(NativeResult::PrepareKeyAttestation(
-                wire_to_native!(body.bytes(), prepare_key_attestation_proto::Result),
+            Opcode::ListAttestationMetadata => Ok(NativeResult::ListAttestationMetadata(
+                wire_to_native!(body.bytes(), list_attestation_metadata_proto::Result),
             )),
-            Opcode::ListRoTs => Ok(NativeResult::ListRoTs(wire_to_native!(
-                body.bytes(),
-                list_rots_proto::Result
-            ))),
         }
     }
 
@@ -559,12 +545,9 @@ impl Convert for ProtobufConverter {
                 result,
                 attest_key_proto::Result
             ))),
-            NativeResult::PrepareKeyAttestation(result) => Ok(ResponseBody::from_bytes(
-                native_to_wire!(result, prepare_key_attestation_proto::Result),
-            )),
-            NativeResult::ListRoTs(result) => Ok(ResponseBody::from_bytes(native_to_wire!(
+            NativeResult::ListAttestationMetadata(result) => Ok(ResponseBody::from_bytes(native_to_wire!(
                 result,
-                list_rots_proto::Result
+                list_attestation_metadata_proto::Result
             ))),
         }
     }

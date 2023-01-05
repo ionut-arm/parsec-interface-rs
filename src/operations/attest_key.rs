@@ -11,50 +11,21 @@ use zeroize::Zeroizing;
 #[derive(Derivative)]
 #[derivative(Debug)]
 #[non_exhaustive]
-pub enum Operation {
-    /// Attestation via TPM 2.0 ActivateCredential operation
-    ActivateCredential {
-        /// Name of key to be attested
-        attested_key_name: String,
-        /// Blob of data representing the encrypted credential
-        #[derivative(Debug = "ignore")]
-        credential_blob: Zeroizing<Vec<u8>>,
-        /// Blob of data representing the encrypted secret
-        #[derivative(Debug = "ignore")]
-        secret: Zeroizing<Vec<u8>>,
-        /// Name of key to be used for attesting
-        attesting_key_name: Option<String>,
-    },
-    ///Key and platform attestation
-    CertifyAndQuote {
-        /// Name of key to be attested
-        attested_key_name: String,
-        /// The nonce to be used in the TLS handshake
-        #[derivative(Debug = "ignore")]
-        nonce: Vec<u8>,
-        /// Name of key to be used for attesting
-        attesting_key_name: Option<String>,
-    },
+pub struct Operation {
+    /// Name of key to be attested
+    pub attested_key_name: String,
+    /// The nonce to be used in the TLS handshake
+    #[derivative(Debug = "ignore")]
+    pub nonce: Vec<u8>,
+    /// Name of key to be used for attesting
+    pub attesting_key_name: Option<String>,
 }
 
 /// Native result of key attestation
 #[derive(Derivative)]
 #[derivative(Debug)]
 #[non_exhaustive]
-pub enum Result {
-    /// Result of attestation via TPM 2.0 ActivateCredential operation
-    ActivateCredential {
-        /// Decrypted credential
-        #[derivative(Debug = "ignore")]
-        credential: Zeroizing<Vec<u8>>,
-    },
-    ///Result of key and platform attestation
-    CertifyAndQuote {
-        ///Key attestation certificate
-        #[derivative(Debug = "ignore")]
-        key_attestation_certificate: Zeroizing<Vec<u8>>,
-        ///Platform attestation certificate
-        #[derivative(Debug = "ignore")]
-        platform_attestation_certificate: Zeroizing<Vec<u8>>,
-    },
+pub struct Result {
+    /// Token that resulted from the attestation operation
+    pub attestation_token: Zeroizing<Vec<u8>>,
 }

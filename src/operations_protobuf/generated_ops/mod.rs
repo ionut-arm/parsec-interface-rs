@@ -32,8 +32,7 @@ pub mod psa_hash_compare;
 pub mod psa_raw_key_agreement;
 pub mod can_do_crypto;
 pub mod attest_key;
-pub mod prepare_key_attestation;
-pub mod list_rots;
+pub mod list_attestation_metadata;
 
 use zeroize::Zeroize;
 
@@ -172,9 +171,8 @@ empty_clear_message!(psa_generate_random::Operation);
 empty_clear_message!(psa_hash_compare::Result);
 empty_clear_message!(can_do_crypto::Operation);
 empty_clear_message!(can_do_crypto::Result);
-empty_clear_message!(prepare_key_attestation::Operation);
-empty_clear_message!(list_rots::Operation);
-empty_clear_message!(list_rots::Result);
+empty_clear_message!(list_attestation_metadata::Operation);
+empty_clear_message!(list_attestation_metadata::Result);
 
 impl ClearProtoMessage for psa_sign_hash::Operation {
     fn clear_message(&mut self) {
@@ -349,72 +347,15 @@ impl ClearProtoMessage for psa_raw_key_agreement::Result {
 
 impl ClearProtoMessage for attest_key::Operation {
     fn clear_message(&mut self) {
-        if let attest_key::Operation {
-            parameters:
-                Some(attest_key::AttestationMechanismParams {
-                    mechanism:
-                        Some(attest_key::attestation_mechanism_params::Mechanism::ActivateCredential(
-                            attest_key::attestation_mechanism_params::ActivateCredential {
-                                credential_blob,
-                                secret,
-                            },
-                        )),
-                }),
-            ..
-        } = self
-        {
-            credential_blob.zeroize();
-            secret.zeroize();
-        }
+        let attest_key::Operation { nonce, .. } = self;
+        nonce.zeroize();
     }
 }
 
 impl ClearProtoMessage for attest_key::Result {
     fn clear_message(&mut self) {
-        match self {
-            attest_key::Result {
-                output:
-                    Some(attest_key::AttestationOutput {
-                        mechanism:
-                            Some(attest_key::attestation_output::Mechanism::ActivateCredential(
-                                attest_key::attestation_output::ActivateCredential { credential },
-                            )),
-                    }),
-            } => credential.zeroize(),
-            attest_key::Result {
-                output:
-                    Some(attest_key::AttestationOutput {
-                        mechanism:
-                            Some(attest_key::attestation_output::Mechanism::CertifyAndQuote(
-                                attest_key::attestation_output::CertifyAndQuote {
-                                    key_attestation_certificate,
-                                    platform_attestation_certificate,
-                                },
-                            )),
-                    }),
-            } => {
-                key_attestation_certificate.zeroize();
-                platform_attestation_certificate.zeroize();
-            }
-            _ => (),
-        }
-    }
-}
-
-impl ClearProtoMessage for prepare_key_attestation::Result {
-    fn clear_message(&mut self) {
-        if let prepare_key_attestation::Result { output: Some(prepare_key_attestation::PrepareKeyAttestationOutput {
-                mechanism: Some(prepare_key_attestation::prepare_key_attestation_output::Mechanism::ActivateCredential(
-                    prepare_key_attestation::prepare_key_attestation_output::ActivateCredential {
-                        name, public, attesting_key_pub
-                    }
-                ))
-            })
-            } = self {
-                name.zeroize();
-                public.zeroize();
-                attesting_key_pub.zeroize();
-            }
+        let attest_key::Result { attestation_token } = self;
+        attestation_token.zeroize();
     }
 }
 
